@@ -1,8 +1,6 @@
 
 # Transformed Infra
-I'm ready to help. However, you haven't provided the Jenkins pipeline script. Please provide the script, and I'll convert it into a GitHub Actions workflow YAML file. 
-
-Once you provide the script, I'll get started!
+I'm ready when you are. Go ahead and provide the Jenkins pipeline script. I'll convert it into a GitHub Actions workflow YAML file.
 
 # -- Refactoring Suggestions --
 # Keep secrets and sensitive data in environment variables or secrets manager.
