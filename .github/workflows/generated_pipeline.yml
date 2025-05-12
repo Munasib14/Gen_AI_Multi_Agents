@@ -2,21 +2,26 @@
 # Transformed Infra
 ```yml
 name: Build and Test
-on: [push]
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
           java-version: '11'
-      - name: Build
-        run: ./gradlew build
-      - name: Test
-        run: ./gradlew test
+
+      - name: Build and Test
+        run: ./gradlew build test
 ```
 
 # -- Refactoring Suggestions --
