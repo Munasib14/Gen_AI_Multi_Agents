@@ -1,0 +1,11 @@
+⚠️ This input doesn't look like ASP.NET code. Please provide valid ASP.NET front-end code.
+-- Transformed  Code --
+```jsx
+import React from 'react';
+
+const CapitalOfIndia = () => {
+  return <div>Delhi</div>;
+};
+
+export default CapitalOfIndia;
+```

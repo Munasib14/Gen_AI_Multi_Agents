@@ -1,0 +1,3 @@
+⚠️ This input doesn't look like ASP.NET code. Please provide valid ASP.NET front-end code.
+-- Transformed  Code --
+I'm happy to help! However, I don't see any ASP.NET code provided. Please paste the code you'd like me to convert to React JSX, and I'll be happy to assist you.

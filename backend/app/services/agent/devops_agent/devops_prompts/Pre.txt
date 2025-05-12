@@ -1,0 +1,38 @@
+# Refactor the Jenkins pipeline script below.
+
+Improve it by:
+- Using parameters instead of hardcoded strings (like image names, branches)
+- Adding comments for each stage
+- Including basic error handling (e.g., try/catch or post-build steps)
+- Following Jenkins pipeline best practices
+
+{{ input_infra }}  
+
+
+# # Transform the Jenkins pipeline script below into an equivalent GitHub Actions workflow.
+
+# ## Guidelines:
+# - Use `jobs` and `steps` structure.
+# - Replace shell commands (`sh`) with `run`.
+# - Use GitHub Actions' built-in actions like `actions/checkout@v3`.
+# - Use `secrets` instead of Jenkins `credentialsId`.
+# - Follow GitHub Actions YAML best practices.
+# - Preserve stage names and logical flow.
+
+# ## Input Jenkinsfile:
+# {{ input_infra }}
+
+# ## Output GitHub Actions Workflow:
+
+
+
+{
+  "infra_description": "pipeline { agent any stages { stage('Build') { steps { sh './gradlew build' } } stage('Test') { steps { sh './gradlew test' } } } }",
+  "prompt_name": "jenkins_pipeline.j2"
+}
+
+
+{
+  "infra_description": "resource \"aws_instance\" \"web\" {\n  ami = \"ami-0c55b159cbfafe1f0\"\n  instance_type = \"t2.micro\"\n}",
+  "prompt_name": "terraform_module.j2"
+}
