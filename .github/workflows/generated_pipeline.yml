@@ -1,5 +1,3 @@
-# Transformed Infra
-```yml
 name: Build and Test
 
 on:
@@ -21,14 +19,3 @@ jobs:
         run: |
           ./gradlew build
           ./gradlew test
-```
-
-# -- Refactoring Suggestions --
-# Keep secrets and sensitive data in environment variables or secrets manager.
-
-// -- Jenkins Pipeline Optimization Suggestions --
-// - Include a 'post' section for better visibility into pipeline success or failure.
-// - Use parameters to make the pipeline reusable for different environments or builds.
-
-# -- Deployment Strategy Recommendations --
-# CI/CD Tip: Automate your deployment process with stages like Build, Test, and Deploy. Use proper error handling and post-build actions to ensure stability.
