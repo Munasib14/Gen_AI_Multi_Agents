@@ -7,10 +7,16 @@ from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 import os
 from pathlib import Path
 from backend.app.services.langgraph.devops_graph import devops_agent_main
+from backend.app.services.agent.devops_agent.devops_files.devops_types import DevOpsState
+from backend.app.services.agent.devops_agent.devops_files.github_pusher import push_to_github
 
 import base64
 import requests
 from dotenv import load_dotenv
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -141,26 +147,79 @@ async def run_test_agent(request: TestRequest):
     result = test_agent_fn(request.source_code, prompt_name=prompt)
     return {"result": result}
 
-@app.get("/get-devops-prompt/{prompt_name}")
-async def get_devops_prompt(prompt_name: str):
-    try:
-        template =env.get_template(prompt_name)
-        rendered = template.render({"infra_code": "# Your Jenkinsfile or Terraform config here"})
-        return {"prompt_content": rendered}
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"DevOps Prompt not found: {e}")
 
+
+# @app.post("/run-devops-agent/")
+# async def run_devops_agent(request: DevOpsRequest):
+#     prompt = request.prompt_name.strip() or "devops_infra.j2"
+#     result = devops_agent_main(request.infra_description, prompt_name=prompt)
+#     return {"result": result}
 
 @app.post("/run-devops-agent/")
 async def run_devops_agent(request: DevOpsRequest):
-    prompt = request.prompt_name.strip() or "devops_infra.j2"
-    result = devops_agent_main(request.infra_description, prompt_name=prompt)
-    return {"result": result}
+    prompt = (request.prompt_name or "").strip() or "jenkins_pipeline.j2"
 
-@app.post("/run-dev-agent/")
-async def run_dev_agent(request: DevOpsRequest):
-    result = await devops_agent_main(request.infra_description, request.prompt_name)
-    return {"result": {"output": result}}
+    # Load GitHub credentials from environment
+    gh_token = os.getenv("GH_TOKEN")
+    gh_repo = os.getenv("GH_REPO")  # e.g., "your-org/your-repo"
+
+    if not gh_token or not gh_repo:
+        logger.error("Missing GH_TOKEN or GH_REPO environment variable.")
+        return {
+            "result": None,
+            "status": "Environment variables GH_TOKEN or GH_REPO are missing"
+        }
+
+    try:
+        logger.info(f"Running DevOps agent with prompt: {prompt}")
+        result = devops_agent_main(
+            infra_code=request.infra_description,
+            prompt_name=prompt,
+            gh_token=gh_token,
+            gh_repo=gh_repo
+        )
+    except Exception as e:
+        logger.exception("Error during DevOps agent execution.")
+        return {
+            "result": None,
+            "status": "Workflow generation failed",
+            "error": str(e)
+        }
+
+    try:
+        workflow_path = ".github/workflows/generated_pipeline.yml"
+        logger.info(f"Pushing generated workflow to GitHub: {gh_repo}/{workflow_path}")
+
+        state = DevOpsState(
+            Devops_input=request.infra_description,  # ✅ Add this
+            Devops_output=result["Devops_output"],
+            gh_token=gh_token,
+            gh_repo=gh_repo,
+            logs=[]
+            
+        )
+
+        push_to_github(state)
+
+        return {
+            "result": result,
+            "status": "Workflow pushed to GitHub successfully"
+        }
+
+    except Exception as e:
+        logger.exception("Failed to push workflow to GitHub.")
+        return {
+            "result": result,
+            "status": "Workflow generation done, but push failed",
+            "error": str(e)
+        }
+
+
+
+# @app.post("/run-dev-agent/")
+# async def run_dev_agent(request: DevOpsRequest):
+#     result = await devops_agent_main(request.infra_description, request.prompt_name)
+#     return {"result": {"output": result}}
 
 
 

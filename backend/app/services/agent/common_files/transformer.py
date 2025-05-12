@@ -89,14 +89,14 @@ def transform_test(state: dict, prompt_template="Convert_ReactPage_to_Playwright
 
     return state
 
-def transform_infra(state: DevOpsState, prompt_template="devops_infra.j2") -> DevOpsState:
+def transform_infra(state: DevOpsState, prompt_template="jenkins_pipeline.j2") -> DevOpsState:
     """
     Uses Groq model to transform infrastructure code.
     """
     input_infra = state.Devops_input # Input infrastructure code (YAML, Terraform, etc.)
     
     # ✅ Wrap input_infra in a dictionary for Jinja2
-    context = {"infra_code": input_infra}
+    context = {"infra_description": input_infra}
     
     # Load prompt using jinja2 with proper context
     prompt = load_dev_prompt(prompt_template, context)
@@ -104,7 +104,7 @@ def transform_infra(state: DevOpsState, prompt_template="devops_infra.j2") -> De
 
     # Call Groq model
     response = client.chat.completions.create(
-        model="llama-4-scout-17b-16e-instruct",  # or another model Groq supports
+        model="meta-llama/llama-4-scout-17b-16e-instruct",  # or another model Groq supports
         messages=[
             {"role": "user", "content": prompt}
         ]
