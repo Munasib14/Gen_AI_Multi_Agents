@@ -1,21 +1,18 @@
 name: Build and Test
-
-on:
+true:
   push:
     branches:
-      - main
-
+    - main
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-      - name: Build and Test
-        run: |
-          ./gradlew build
-          ./gradlew test
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: temurin
+    - name: Build and Test
+      run: ./gradlew build test
