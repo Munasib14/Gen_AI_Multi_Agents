@@ -327,7 +327,7 @@ async def get_prompt(prompt_name: str, agent_type: str):
         elif agent_type == "Test Agent":
             context = {"input_file": "-- React Code/API/Selenium TestCases"}
         elif agent_type == "DevOps Agent":
-            context = {"infra_code": "-- Terraform / ARM / YAML / Docker code here"}
+            context = {"infra_description": "-- jenkins / Terraform / ARM / YAML / Docker code here"}
         else:
             raise ValueError(f"Unknown agent type: {agent_type}")
 
