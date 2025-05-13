@@ -72,7 +72,6 @@
     
     
     
-    
 import os
 import re
 from github import Github
@@ -107,6 +106,54 @@ def extract_yaml_block(markdown: str) -> str:
     return match.group(1).strip() if match else markdown.strip()
 
 
+import yaml
+
+def fix_setup_java_distribution(yaml_content: str) -> str:
+    """
+    Fix the 'setup-java' step by adding 'distribution' if it's missing.
+    Args:
+        yaml_content (str): The raw YAML content as a string.
+    Returns:
+        str: The updated YAML content with 'distribution' fixed.
+    """
+    data = yaml.safe_load(yaml_content)
+
+    if 'jobs' not in data:
+        return yaml_content  # Not a valid workflow file
+
+    for job_name, job in data['jobs'].items():
+        if 'steps' not in job:
+            continue
+
+        for step in job['steps']:
+            if isinstance(step, dict) and step.get('uses', '').startswith('actions/setup-java@'):
+                if 'with' not in step:
+                    step['with'] = {}
+
+                if 'distribution' not in step['with']:
+                    # Add default distribution
+                    step['with']['distribution'] = 'temurin'
+
+    # Dump the updated content back to YAML
+    return yaml.dump(data, sort_keys=False)
+
+
+def remove_java_gradle_steps(yaml_content: str) -> str:
+    data = yaml.safe_load(yaml_content)
+
+    if 'jobs' in data:
+        for job in data['jobs'].values():
+            job['steps'] = [
+                step for step in job.get('steps', [])
+                if not (
+                    'setup-java' in step.get('uses', '') or
+                    './gradlew' in step.get('run', '')
+                )
+            ]
+    return yaml.dump(data, sort_keys=False)
+
+
+
 def push_to_github(state: DevOpsState) -> DevOpsState:
     def get_config(attr: str, default: str = None) -> str:
         return getattr(state, attr, None) or os.getenv(attr.upper()) or default
@@ -136,7 +183,17 @@ def push_to_github(state: DevOpsState) -> DevOpsState:
 
     # ✅ Final safety cleaning
     workflow_content = clean_yaml_fences(workflow_content)
-    workflow_content = workflow_content.encode("utf-8", "ignore").decode("utf-8")
+    # workflow_content = workflow_content.encode("utf-8", "ignore").decode("utf-8") 
+    
+    # ✅ Fix the Java setup step if distribution is missing
+    workflow_content = fix_setup_java_distribution(workflow_content)
+    # ✅ Remove Java Gradle steps if they exist
+    workflow_content = remove_java_gradle_steps(workflow_content)
+    
+    # Fix common LLM error: replacing 'true:' with 'on:'
+    workflow_content = workflow_content.replace("true:", "on:")
+    workflow_content = workflow_content.encode("utf-8", "ignore").decode("utf-8") 
+
 
     # ✅ Debug: Print the final YAML content before pushing
     print("🔍 Final cleaned YAML content:\n", workflow_content)
@@ -181,4 +238,3 @@ def push_to_github(state: DevOpsState) -> DevOpsState:
         raise
 
     return state
-
