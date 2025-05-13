@@ -1,18 +1,32 @@
+# Transformed Infra
+```yml
 name: Build and Test
-true:
+
+on:
   push:
     branches:
-    - main
+      - main
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Setup Java
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: temurin
-    - name: Build and Test
-      run: ./gradlew build test
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+      - name: Build and Test
+        run: ./gradlew build test
+```
+
+# -- Refactoring Suggestions --
+# Keep secrets and sensitive data in environment variables or secrets manager.
+
+// -- Jenkins Pipeline Optimization Suggestions --
+// - Include a 'post' section for better visibility into pipeline success or failure.
+// - Use parameters to make the pipeline reusable for different environments or builds.
+
+# -- Deployment Strategy Recommendations --
+# CI/CD Tip: Automate your deployment process with stages like Build, Test, and Deploy. Use proper error handling and post-build actions to ensure stability.
