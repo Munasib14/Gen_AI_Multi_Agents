@@ -33,6 +33,11 @@ Improve it by:
 
 
 {
+  "infra_description": "pipeline {\n  agent any\n  stages {\n    stage('Install Dependencies') {\n      steps {\n        sh 'python -m pip install --upgrade pip'\n        sh 'pip install -r requirements.txt'\n      }\n    }\n    stage('Lint') {\n      steps {\n        sh 'flake8 .'\n      }\n    }\n    stage('Test') {\n      steps {\n        sh 'pytest tests/'\n      }\n    }\n  }\n}",
+  "prompt_name": "jenkins_pipeline.j2"
+}
+
+{
   "infra_description": "resource \"aws_instance\" \"web\" {\n  ami = \"ami-0c55b159cbfafe1f0\"\n  instance_type = \"t2.micro\"\n}",
   "prompt_name": "terraform_module.j2"
 }

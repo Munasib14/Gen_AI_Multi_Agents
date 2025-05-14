@@ -51,14 +51,14 @@ def devops_agent_main(infra_code: str, prompt_name: str = "jenkins_pipeline.j2",
         builder.add_node("terraform_cost_estimator", terraform_cost_estimator)
         builder.add_node("terraform_plan_validator", terraform_plan_validator)
         builder.add_node("log_metadata", log_metadata)
-        builder.add_node("push_to_github", push_to_github)
+        # builder.add_node("push_to_github", push_to_github)
 
         builder.set_entry_point("transform_infra")
         builder.add_edge("transform_infra", "terraform_linter")
         builder.add_edge("terraform_linter", "terraform_cost_estimator")
         builder.add_edge("terraform_cost_estimator", "terraform_plan_validator")
         builder.add_edge("terraform_plan_validator", "log_metadata")
-        builder.add_edge("log_metadata", "push_to_github")
+        # builder.add_edge("log_metadata", "push_to_github")
 
     else:
         # Jenkins pipeline
@@ -67,7 +67,7 @@ def devops_agent_main(infra_code: str, prompt_name: str = "jenkins_pipeline.j2",
         builder.add_node("autoscale", suggest_jenkins_optimizations)
         builder.add_node("add_monitoring", suggest_monitoring_integration)
         builder.add_node("deployment_strategy", recommend_deployment_strategy)
-        builder.add_node("push_to_github", push_to_github)
+        # builder.add_node("push_to_github", push_to_github)
 
         builder.set_entry_point("transform_infra")
         builder.add_edge("transform_infra", "refactor_devops")
@@ -75,7 +75,7 @@ def devops_agent_main(infra_code: str, prompt_name: str = "jenkins_pipeline.j2",
         builder.add_edge("log_metadata", "autoscale")
         builder.add_edge("autoscale", "add_monitoring")
         builder.add_edge("add_monitoring", "deployment_strategy")
-        builder.add_edge("deployment_strategy", "push_to_github")
+        # builder.add_edge("deployment_strategy", "push_to_github")
 
     graph = builder.compile()
     return graph.invoke({

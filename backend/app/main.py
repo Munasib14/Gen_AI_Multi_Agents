@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
-# from app.services.agent.common_files.push_to_github import  push_all_local_changes, PushPayload, push_to_github
+#from app.services.agent.common_files.push_to_github import  push_all_local_changes, PushPayload, push_to_github
 import os
 from pathlib import Path
 from backend.app.services.langgraph.devops_graph import devops_agent_main
@@ -13,10 +13,13 @@ from backend.app.services.agent.devops_agent.devops_files.github_pusher import p
 import base64
 import requests
 from dotenv import load_dotenv
+from backend.app.services.agent.devops_agent.devops_files.logger_config import setup_logger
 
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = setup_logger("DevOpsLogger") 
+
+# import logging
+# logging.basicConfig(level=logging.INFO)
+# logger = logging.getLogger(__name__)
 
 # Load environment variables
 from dotenv import load_dotenv
