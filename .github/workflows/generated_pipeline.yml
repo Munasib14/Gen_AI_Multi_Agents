@@ -9,25 +9,13 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
     - name: Install Python dependencies
-      run: 'pip install -r requirements.txt
+      run: 'pip install --upgrade pip
+
+        pip install -r requirements.txt
 
         '
-    - name: Terraform init
-      run: 'terraform init
+    - name: Build and deploy
+      run: 'echo "Building and deploying..."
 
-        '
-    - name: Terraform apply
-      run: 'terraform apply -auto-approve
-
-        '
-    - name: Docker build
-      run: 'docker build -t my-image .
-
-        '
-    - name: Docker run
-      run: docker run -d my-image
+        # Add your build and deployment commands here'
