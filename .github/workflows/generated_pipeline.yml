@@ -1,15 +1,29 @@
-name: Python and Java Workflow
+name: Terraform Workflow
 on:
   push:
     branches:
     - main
 jobs:
-  build:
+  terraform:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
-    - name: Install Python dependencies
-      run: 'python -m pip install --upgrade pip
+      uses: actions/checkout@v2
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.2.6
+    - name: Terraform Init
+      run: terraform init
+    - name: Terraform Validate
+      run: terraform validate
+    - name: Terraform Plan
+      run: terraform plan
+    - name: Terraform Apply
+      run: 'terraform apply -auto-approve
 
-        pip install -r requirements.txt'
+        '
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: us-east-1
