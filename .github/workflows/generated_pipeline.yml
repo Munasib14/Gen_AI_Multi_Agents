@@ -1,4 +1,4 @@
-name: Python and Java Project
+name: Python and Java Workflow
 on:
   push:
     branches:
