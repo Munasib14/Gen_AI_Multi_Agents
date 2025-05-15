@@ -1,34 +1,21 @@
-name: Terraform
+name: Terraform ARM
 on:
   push:
     branches:
     - main
 jobs:
-  terraform:
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform_version: 1.2.0
-    - name: Terraform Init
-      run: terraform init
-    - name: Check for Terraform files
-      id: check-tf-files
-      run: "tf_files=$(find . -name \"*.tf\")\nif [ -n \"$tf_files\" ]; then\n  echo\
-        \ \"tf_files_found=true\" >> $GITHUB_OUTPUT\nelse\n  echo \"tf_files_found=false\"\
-        \ >> $GITHUB_OUTPUT\nfi\n"
-    - name: Terraform Validate
-      if: ${{ steps.check-tf-files.outputs.tf_files_found == 'true' }}
-      run: terraform validate
-    - name: Terraform Plan
-      if: ${{ steps.check-tf-files.outputs.tf_files_found == 'true' }}
-      run: terraform plan
-    - name: Terraform Apply
-      if: ${{ steps.check-tf-files.outputs.tf_files_found == 'true' && github.event_name
-        == 'push' && github.actor == 'your-github-username' }}
-      env:
-        TF_PLAN: terraform.plan
+      uses: actions/checkout@v3
+    - name: Install Python dependencies
+      run: 'pip install -r requirements.txt
+
+        '
+    - name: Terraform init
+      run: 'terraform init
+
+        '
+    - name: Terraform apply
       run: terraform apply -auto-approve
