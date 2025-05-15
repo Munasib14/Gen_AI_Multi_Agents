@@ -1,4 +1,4 @@
-name: DevOps Pipeline
+name: DevOps Workflow
 on:
   push:
     branches:
@@ -13,5 +13,5 @@ jobs:
       run: 'pip install -r requirements.txt
 
         '
-    - name: Run shell command
-      run: echo "Hello World"
+    - name: Run custom script
+      run: echo "Custom script execution"
