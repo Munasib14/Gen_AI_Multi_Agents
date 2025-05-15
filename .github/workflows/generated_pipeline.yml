@@ -1,6 +1,8 @@
 name: Python and Java Workflow
 on:
-- push
+  push:
+    branches:
+    - main
 jobs:
   build:
     runs-on: ubuntu-latest
