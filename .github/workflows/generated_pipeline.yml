@@ -1,36 +1,21 @@
-name: Terraform Automation
+name: DevOps Pipeline
 on:
   push:
     branches:
     - main
 jobs:
-  terraform:
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.3.5
-    - name: Terraform Init
-      run: terraform init
-    - name: Check for Terraform files
-      id: check-tf-files
-      run: "tf_files=$(find . -type f -name \"*.tf\")\nif [ -n \"$tf_files\" ]; then\n\
-        \  echo \"tf_files_found=true\" >> $GITHUB_OUTPUT\nelse\n  echo \"tf_files_found=false\"\
-        \ >> $GITHUB_OUTPUT\nfi\n"
-    - name: Terraform Validate
-      if: ${{ steps.check-tf-files.outputs.tf_files_found == 'true' }}
-      run: terraform validate
-    - name: Terraform Plan
-      if: ${{ steps.check-tf-files.outputs.tf_files_found == 'true' }}
-      run: terraform plan
-    - name: Terraform Apply
-      if: ${{ steps.check-tf-files.outputs.tf_files_found == 'true' && github.event_name
-        == 'push' && github.actor != 'github-actions[bot]' }}
-      env:
-        TF_PLAN_FILE: tfplan
-      run: 'terraform plan -out=${TF_PLAN_FILE}
+    - name: Install Python dependencies
+      run: 'pip install -r requirements.txt
 
-        terraform apply -auto-approve ${TF_PLAN_FILE}'
+        '
+    - name: Build and deploy
+      env:
+        JAVA_HOME: ${{ steps.setup-java.outputs.java_home }}
+      run: 'echo "Building and deploying..."
+
+        # Add your build and deploy commands here'
