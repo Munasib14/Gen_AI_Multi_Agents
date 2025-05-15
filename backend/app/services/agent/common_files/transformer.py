@@ -109,6 +109,7 @@ def transform_infra(state: DevOpsState, prompt_template="jenkins_pipeline.j2") -
             {"role": "user", "content": prompt}
         ]
     )
+    
 
     transformed = response.choices[0].message.content.strip()
     state.Devops_output += f"\n# Transformed Infra\n{transformed}"

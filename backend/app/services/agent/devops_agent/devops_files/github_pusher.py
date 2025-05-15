@@ -46,19 +46,51 @@ def fix_setup_java_distribution(yaml_content: str) -> str:
         return yaml_content 
     
     
-def remove_java_gradle_steps(yaml_content: str) -> str:
-    data = yaml.safe_load(yaml_content)
+# def remove_java_gradle_steps(yaml_content: str) -> str:
+#     data = yaml.safe_load(yaml_content)
 
-    if 'jobs' in data:
-        for job in data['jobs'].values():
-            job['steps'] = [
-                step for step in job.get('steps', [])
-                if not (
-                    'setup-java' in step.get('uses', '') or
-                    './gradlew' in step.get('run', '')
-                )
-            ]
-    return yaml.dump(data, sort_keys=False)
+#     if 'jobs' in data:
+#         for job in data['jobs'].values():
+#             job['steps'] = [
+#                 step for step in job.get('steps', [])
+#                 if not (
+#                     'setup-java' in step.get('uses', '') or
+#                     './gradlew' in step.get('run', '')
+#                 )
+#             ]
+#     return yaml.dump(data, sort_keys=False)
+
+
+def remove_java_gradle_steps(yaml_content: str) -> str:
+    try:
+        # Remove lines starting with '//' (which are invalid in YAML)
+        cleaned_lines = []
+        for line in yaml_content.splitlines():
+            stripped = line.strip()
+            if not stripped.startswith('//'):
+                cleaned_lines.append(line)
+        cleaned_yaml = '\n'.join(cleaned_lines)
+
+        # Parse YAML content safely
+        data = yaml.safe_load(cleaned_yaml)
+
+        # Remove Java/Gradle steps if any
+        if 'jobs' in data:
+            for job in data['jobs'].values():
+                job['steps'] = [
+                    step for step in job.get('steps', [])
+                    if not (
+                        'setup-java' in step.get('uses', '') or
+                        './gradlew' in step.get('run', '')
+                    )
+                ]
+
+        # Return updated YAML as string
+        return yaml.dump(data, sort_keys=False)
+
+    except yaml.YAMLError as e:
+        print(f"❌ YAML parsing failed: {e}")
+        return None
 
 
 def push_to_github(state: DevOpsState) -> DevOpsState:
