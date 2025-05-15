@@ -13,5 +13,5 @@ jobs:
       run: 'pip install -r requirements.txt
 
         '
-    - name: Run custom script
-      run: echo "Custom script execution"
+    - name: Run shell command
+      run: echo "Hello World"
