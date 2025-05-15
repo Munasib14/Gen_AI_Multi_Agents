@@ -1,38 +1,17 @@
-name: Terraform Automation
+name: DevOps Pipeline
 on:
   push:
     branches:
     - main
 jobs:
-  terraform:
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.2.6
-    - name: Terraform Init
-      run: terraform init
-    - name: Check for Terraform files
-      id: check-tf-files
-      run: "tf_files=$(find . -name \"*.tf\")\nif [ -n \"$tf_files\" ]; then\n  echo\
-        \ \"Terraform files found\"\n  echo \"tf_files=true\" >> $GITHUB_OUTPUT\n\
-        else\n  echo \"No Terraform files found\"\n  echo \"tf_files=false\" >> $GITHUB_OUTPUT\n\
-        fi\n"
-    - name: Terraform Validate
-      if: ${{ steps.check-tf-files.outputs.tf_files == 'true' }}
-      run: terraform validate
-    - name: Terraform Plan
-      if: ${{ steps.check-tf-files.outputs.tf_files == 'true' }}
-      run: terraform plan
-    - name: Terraform Apply
-      if: ${{ steps.check-tf-files.outputs.tf_files == 'true' && github.event_name
-        == 'push' && github.actor != 'github-actions[bot]' }}
-      env:
-        TF_IN_AUTOMATION: 1
-        TF_PLAN_FILE: tfplan
-      run: 'terraform plan -out=tfplan
+    - name: Install Python dependencies
+      run: 'pip install -r requirements.txt
 
-        terraform apply -auto-approve tfplan'
+        '
+    - name: Run shell command
+      run: echo "Hello World"
