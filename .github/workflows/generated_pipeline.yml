@@ -1,36 +1,11 @@
-name: Terraform Automation
+name: Build and Test
 on:
   push:
     branches:
     - main
 jobs:
-  terraform:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-      with:
-        terraform-version: 1.2.0
-    - name: Terraform Init
-      run: terraform init
-    - name: Check for Terraform files
-      id: check-tf-files
-      run: "tf_files=$(find . -name \"*.tf\")\nif [ -n \"$tf_files\" ]; then\n  echo\
-        \ \"true\" > $GITHUB_OUTPUT\nelse\n  echo \"false\" > $GITHUB_OUTPUT\nfi\n"
-    - name: Terraform Validate
-      if: ${{ steps.check-tf-files.outputs }}
-      run: terraform validate
-    - name: Terraform Plan
-      if: ${{ steps.check-tf-files.outputs }}
-      run: terraform plan
-    - name: Terraform Apply
-      if: ${{ steps.check-tf-files.outputs && github.event_name == 'push' && github.actor
-        != 'dependabot[bot]' }}
-      env:
-        TF_PLAN: terraform plan -out=tfplan
-        TF_APPLY: terraform apply -auto-approve tfplan
-      run: 'terraform plan -out=tfplan
-
-        terraform apply -auto-approve tfplan'
+      uses: actions/checkout@v3
