@@ -23,7 +23,7 @@ jobs:
         '
     - name: Terraform Plan
       run: "if [ -n \"$(find . -name '*.tf')\" ]; then\n  terraform plan\nelse\n \
-        \ echo \"No .tf files found, skipping terraform plan\"\nfi\n"
+        \ echo \"No .tf files found, skipping plan\"\nfi\n"
     - name: Terraform Apply
       run: "if [ -n \"$(find . -name '*.tf')\" ]; then\n  terraform apply -auto-approve\n\
-        else\n  echo \"No .tf files found, skipping terraform apply\"\nfi"
+        else\n  echo \"No .tf files found, skipping apply\"\nfi"
